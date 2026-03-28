@@ -179,9 +179,9 @@ def upload_file():
     if success_count > 0:
         db.session.commit()
         if rename_count > 0:
-            flash(f'成功上传 {success_count} 个文件 (其中 {rename_count} 个同名文件已自动加后缀)', 'success')
+            flash(f'Successfully uploaded {success_count} files (including {rename_count} files with duplicate names that were automatically renamed)', 'success')
         else:
-            flash(f'成功上传 {success_count} 个文件！', 'success')
+            flash(f'Successfully uploaded {success_count} files!', 'success')
             
     return redirect(url_for('index', folder_id=current_view_folder_id) if current_view_folder_id else url_for('index'))
 
@@ -219,7 +219,7 @@ def delete_file(file_id):
     except: pass
     db.session.delete(f)
     db.session.commit()
-    flash('文件已删除', 'warning')
+    flash('File deleted successfully', 'warning')
     return redirect(url_for('index', folder_id=fid) if fid else url_for('index'))
 
 @app.route('/delete_folder/<int:folder_id>', methods=['POST'])
@@ -231,7 +231,7 @@ def delete_folder(folder_id):
     if mode == 'delete':
         delete_folder_contents_recursive(folder)
         db.session.delete(folder)
-        flash(f'文件夹 "{folder.name}" 及其所有内容已彻底删除。', 'danger')
+        flash(f'Folder "{folder.name}" and all its contents have been permanently deleted.', 'danger')
     else:
         # 🌟 保留内容移到上一级时，如果上一级有同名文件/文件夹，自动重命名防冲突
         for f in FileRecord.query.filter_by(folder_id=folder_id).all(): 
@@ -241,7 +241,7 @@ def delete_folder(folder_id):
             sub.name = get_unique_foldername(parent_id, sub.name)
             sub.parent_id = parent_id
         db.session.delete(folder)
-        flash(f'文件夹 "{folder.name}" 已删除，内容已安全移至上级目录。', 'info')
+        flash(f'Folder "{folder.name}" has been deleted, and its contents have been safely moved to the parent directory.', 'info')
 
     db.session.commit()
     return redirect(url_for('index', folder_id=parent_id) if parent_id else url_for('index'))
