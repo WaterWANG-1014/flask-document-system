@@ -1,4 +1,4 @@
-# ⚖️ Law Firm Document Management System
+# ⚖️ Document Management System
 
 ![Python Version](https://img.shields.io/badge/python-3.9+-blue.svg)
 ![Flask Version](https://img.shields.io/badge/flask-2.0+-green.svg)
