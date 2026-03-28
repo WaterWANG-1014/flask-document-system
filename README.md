@@ -4,10 +4,10 @@
 ![Flask Version](https://img.shields.io/badge/flask-2.0+-green.svg)
 
 ## 📖 Project Overview
-A secure, scalable, and efficient file management backend system designed specifically for law firms. Built with **Python** and **Flask**, this system streamlines the process of uploading, categorizing, and managing confidential legal documents while ensuring data integrity.
+A secure, scalable, and efficient file management backend system designed for all main kinds file manage system. Built with **Python** and **Flask**, this system streamlines the process of uploading, categorizing, and managing documents while ensuring data integrity.
 
 ## ✨ Key Features
-* **Secure File Handling**: Safe upload and download of legal documents (PDFs, DOCX, etc.) with automatic file type validation.
+* **Secure File Handling**: Safe upload and download of documents (PDFs, DOCX, etc.) with automatic file type validation.
 * **Efficient Categorization**: Organizes files based on case numbers, client IDs, or document types.
 * **RESTful API Design**: Clean and well-structured API endpoints for frontend integration.
 * **Environment Protection**: Sensitive configuration and local uploads are strictly isolated using `.gitignore`.
