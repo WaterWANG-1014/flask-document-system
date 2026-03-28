@@ -131,9 +131,9 @@ def create_folder():
         db.session.commit()
         
         if safe_folder_name != folder_name:
-            flash(f'发现同名文件夹，已自动重命名为 "{safe_folder_name}"', 'info')
+            flash(f'Folder "{folder_name}" already exists, automatically renamed to "{safe_folder_name}"', 'info')
         else:
-            flash(f'文件夹 "{folder_name}" 创建成功', 'success')
+            flash(f'Folder "{folder_name}" created successfully', 'success')
             
     return redirect(url_for('index', folder_id=parent_id) if parent_id else url_for('index'))
 
