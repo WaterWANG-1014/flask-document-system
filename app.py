@@ -1,7 +1,10 @@
 import os
 import uuid
+import random
+import string
 from datetime import datetime
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash, jsonify
+from functools import wraps
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash, jsonify, session, make_response
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 
@@ -38,7 +41,47 @@ class FileRecord(db.Model):
     folder_id = db.Column(db.Integer, db.ForeignKey('folder.id'), nullable=True)
 
 # ==========================================
-# 🌟 新增：智能重命名辅助函数 (防止同名冲突)
+# 🌟 新增：身份验证与验证码辅助函数
+# ==========================================
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def generate_svg_captcha():
+    chars = string.ascii_uppercase + string.digits
+    captcha_text = ''.join(random.choices(chars, k=4))
+    
+    width, height = 120, 40
+    svg = f'<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg">'
+    svg += f'<rect width="100%" height="100%" fill="#f3f4f6"/>'
+    
+    for _ in range(5):
+        x1, y1 = random.randint(0, width), random.randint(0, height)
+        x2, y2 = random.randint(0, width), random.randint(0, height)
+        color = f"rgb({random.randint(150,220)},{random.randint(150,220)},{random.randint(150,220)})"
+        svg += f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" stroke-width="2"/>'
+    
+    for _ in range(30):
+        cx, cy = random.randint(0, width), random.randint(0, height)
+        svg += f'<circle cx="{cx}" cy="{cy}" r="1" fill="#9ca3af"/>'
+        
+    for i, char in enumerate(captcha_text):
+        x = 20 + i * 20
+        y = 25 + random.randint(-3, 3)
+        angle = random.randint(-15, 15)
+        color = f"rgb({random.randint(50,150)},{random.randint(50,150)},{random.randint(50,150)})"
+        svg += f'<text x="{x}" y="{y}" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="{color}" transform="rotate({angle} {x} {y})">{char}</text>'
+        
+    svg += '</svg>'
+    return captcha_text, svg
+
+# ==========================================
+# 🌟 原有：智能重命名辅助函数 (防止同名冲突)
 # ==========================================
 
 def get_unique_foldername(parent_id, folder_name):
@@ -84,7 +127,42 @@ def delete_folder_contents_recursive(folder):
         db.session.delete(sub)
 
 # --- 路由 ---
+
+@app.route('/captcha')
+def get_captcha():
+    code, svg = generate_svg_captcha()
+    session['captcha'] = code.lower()
+    response = make_response(svg)
+    response.content_type = 'image/svg+xml'
+    return response
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        captcha_input = request.form.get('captcha')
+        
+        # 简单校验
+        if not captcha_input or captcha_input.lower() != session.get('captcha', ''):
+            flash('Graphic capture is incorrect', 'danger')
+        elif username == 'admin' and password == 'admin123':
+            session['logged_in'] = True
+            flash('Login successful', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid username or password', 'danger')
+            
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    flash('Logged out successfully', 'info')
+    return redirect(url_for('login'))
+
 @app.route('/', methods=['GET'])
+@login_required
 def index():
     folder_id = request.args.get('folder_id', type=int)
     query = request.args.get('q', '')
@@ -120,6 +198,7 @@ def index():
     return render_template('index.html', files=files, folders=folders, current_folder=current_folder, breadcrumbs=breadcrumbs, query=query, sort_by=sort_by)
 
 @app.route('/create_folder', methods=['POST'])
+@login_required
 def create_folder():
     folder_name = request.form.get('folder_name')
     parent_id = request.form.get('parent_id', type=int)
@@ -138,6 +217,7 @@ def create_folder():
     return redirect(url_for('index', folder_id=parent_id) if parent_id else url_for('index'))
 
 @app.route('/upload', methods=['POST'])
+@login_required
 def upload_file():
     uploaded_files = request.files.getlist('file')
     relative_paths = request.form.getlist('paths') 
@@ -186,6 +266,7 @@ def upload_file():
     return redirect(url_for('index', folder_id=current_view_folder_id) if current_view_folder_id else url_for('index'))
 
 @app.route('/move_file', methods=['POST'])
+@login_required
 def move_file():
     data = request.json
     f = FileRecord.query.get(data.get('file_id'))
@@ -201,16 +282,19 @@ def move_file():
     return jsonify({'status': 'error'}), 400
 
 @app.route('/view/<int:file_id>')
+@login_required
 def view_file(file_id):
     f = FileRecord.query.get_or_404(file_id)
     return send_from_directory(app.config['UPLOAD_FOLDER'], f.disk_filename, as_attachment=False, download_name=f.real_filename)
 
 @app.route('/download/<int:file_id>')
+@login_required
 def download_file(file_id):
     f = FileRecord.query.get_or_404(file_id)
     return send_from_directory(app.config['UPLOAD_FOLDER'], f.disk_filename, as_attachment=True, download_name=f.real_filename)
 
 @app.route('/delete/<int:file_id>', methods=['POST'])
+@login_required
 def delete_file(file_id):
     f = FileRecord.query.get_or_404(file_id)
     fid = f.folder_id
@@ -223,6 +307,7 @@ def delete_file(file_id):
     return redirect(url_for('index', folder_id=fid) if fid else url_for('index'))
 
 @app.route('/delete_folder/<int:folder_id>', methods=['POST'])
+@login_required
 def delete_folder(folder_id):
     folder = Folder.query.get_or_404(folder_id)
     parent_id = folder.parent_id
@@ -247,6 +332,7 @@ def delete_folder(folder_id):
     return redirect(url_for('index', folder_id=parent_id) if parent_id else url_for('index'))
 
 @app.route('/batch_delete', methods=['POST'])
+@login_required
 def batch_delete():
     data = request.json
     file_ids = data.get('file_ids', [])
