@@ -1,0 +1,16 @@
+# Core Web Framework
+Flask
+Werkzeug
+
+# Database Management (e.g., SQLite or PostgreSQL)
+Flask-SQLAlchemy
+SQLAlchemy
+
+# Environment Variables (for reading .env files safely)
+python-dotenv
+
+# Cross-Origin Resource Sharing (if connecting to a separate frontend)
+Flask-CORS
+
+# File Security
+secure-filename
