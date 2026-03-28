@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>文件管理系统</title>
+    <title>File Manage system</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
@@ -275,7 +275,7 @@
                         style="background:#0d6efd; color:white; width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center;">
                         <i class="bi bi-folder2-open"></i>
                     </div>
-                    <span>事务所文件系统</span>
+                    <span>File System</span>
                 </a>
 
                 <div class="d-flex align-items-center gap-2">
@@ -283,7 +283,7 @@
                         <div class="form-check form-switch m-0 d-flex align-items-center">
                             <input class="form-check-input mt-0" type="checkbox" id="autoRefreshSwitch" checked>
                             <label class="form-check-label ms-2 small text-secondary user-select-none"
-                                for="autoRefreshSwitch">自动刷新</label>
+                                for="autoRefreshSwitch">Auto Refresh</label>
                         </div>
                         <div class="spinner-border text-primary ms-2" id="refreshSpinner"
                             style="width: 12px; height: 12px; border-width: 2px; display:none;"></div>
@@ -294,7 +294,7 @@
                             <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3"><i
                                     class="bi bi-search text-muted"></i></span>
                             <input type="text" class="form-control border-start-0 rounded-end-pill ps-0" name="q"
-                                value="{{ query }}" placeholder="搜索文件...">
+                                value="{{ query }}" placeholder="Search...">
                         </div>
                         {% if query %}
                         <a href="{{ url_for('index') }}"
@@ -310,7 +310,7 @@
                     <ol class="breadcrumb mb-0 align-items-center">
                         <li class="breadcrumb-item">
                             <a href="{{ url_for('index') }}" class="home-crumb text-decoration-none"><i
-                                    class="bi bi-house-door-fill"></i> 文件首页</a>
+                                    class="bi bi-house-door-fill"></i> Home</a>
                         </li>
                         {% for crumb in breadcrumbs %}
                         <li class="breadcrumb-item active crumb-item" aria-current="page">
@@ -348,12 +348,13 @@
             {% if not query %}
             <div class="col-md-4">
                 <div class="card-box h-100 p-4 d-flex flex-column justify-content-center">
-                    <h6 class="text-secondary mb-3"><i class="bi bi-folder-plus"></i> 新建文件夹</h6>
+                    <h6 class="text-secondary mb-3"><i class="bi bi-folder-plus"></i> Create New Folder</h6>
                     <form action="{{ url_for('create_folder') }}" method="POST" class="d-flex gap-2">
                         <input type="hidden" name="parent_id" value="{{ current_folder.id if current_folder else '' }}">
                         <input type="text" class="form-control rounded-pill bg-light border-0 px-3" name="folder_name"
-                            placeholder="输入文件夹名称" required>
-                        <button type="submit" class="btn btn-warning text-white rounded-pill px-3 fw-bold">创建</button>
+                            placeholder="Folder name" required>
+                        <button type="submit"
+                            class="btn btn-warning text-white rounded-pill px-3 fw-bold">Create</button>
                     </form>
                 </div>
             </div>
@@ -365,8 +366,8 @@
 
                     <div class="upload-overlay" id="uploadOverlay">
                         <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;"></div>
-                        <h5 id="uploadStatusTitle" class="fw-bold text-dark">正在上传...</h5>
-                        <p id="uploadStatusText" class="text-muted">请稍候，不要关闭页面</p>
+                        <h5 id="uploadStatusTitle" class="fw-bold text-dark">Uploading...</h5>
+                        <p id="uploadStatusText" class="text-muted">Please wait, do not close the page</p>
                         <div class="progress-bar-custom">
                             <div id="uploadProgressBar" class="progress-fill"></div>
                         </div>
@@ -375,17 +376,17 @@
                     <div class="upload-icon-box">
                         <i class="bi bi-cloud-arrow-up-fill text-primary fs-3"></i>
                     </div>
-                    <h5 class="upload-text-main fw-bold text-dark mb-1">点击这里上传文件</h5>
-                    <p class="text-muted small mb-3">支持拖拽文件或整个文件夹到框内</p>
+                    <h5 class="upload-text-main fw-bold text-dark mb-1">Click here to upload files</h5>
+                    <p class="text-muted small mb-3">Supports dragging files or entire folders into the box</p>
 
                     <div class="d-flex gap-2">
                         <button class="btn btn-primary btn-rounded px-4"
                             onclick="document.getElementById('hidden-file-input').click();">
-                            <i class="bi bi-file-earmark-plus"></i> 上传文件
+                            <i class="bi bi-file-earmark-plus"></i> Upload Files
                         </button>
                         <button class="btn btn-outline-primary btn-rounded px-4"
                             onclick="document.getElementById('hidden-folder-input').click();">
-                            <i class="bi bi-folder-plus"></i> 上传文件夹
+                            <i class="bi bi-folder-plus"></i> Upload Folder
                         </button>
                     </div>
 
@@ -402,16 +403,16 @@
                 <div class="d-flex align-items-center gap-2">
                     <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
                         <i class="bi bi-list-ul text-primary"></i>
-                        {% if current_folder %} {{ current_folder.name }} {% else %} 全部文件 {% endif %}
+                        {% if current_folder %} {{ current_folder.name }} {% else %} All Files {% endif %}
                     </span>
                     <span id="lastUpdatedTime" class="small text-muted ms-2 mobile-hidden"></span>
                 </div>
 
                 <div class="d-flex gap-2">
                     <a href="{{ url_for('index', folder_id=current_folder.id if current_folder else None, sort='name_asc', q=query) }}"
-                        class="btn btn-sm btn-outline-light text-dark border hover-bg-light {{ 'active bg-light fw-bold' if sort_by == 'name_asc' else '' }}">按名称</a>
+                        class="btn btn-sm btn-outline-light text-dark border hover-bg-light {{ 'active bg-light fw-bold' if sort_by == 'name_asc' else '' }}">Name</a>
                     <a href="{{ url_for('index', folder_id=current_folder.id if current_folder else None, sort='date_desc', q=query) }}"
-                        class="btn btn-sm btn-outline-light text-dark border hover-bg-light {{ 'active bg-light fw-bold' if sort_by == 'date_desc' else '' }}">按时间</a>
+                        class="btn btn-sm btn-outline-light text-dark border hover-bg-light {{ 'active bg-light fw-bold' if sort_by == 'date_desc' else '' }}">Time</a>
                 </div>
             </div>
 
@@ -421,10 +422,10 @@
                         <tr>
                             <th width="5%" class="text-center ps-4"><input class="form-check-input select-item"
                                     type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
-                            <th class="col-name">文件名</th>
-                            <th width="20%" class="mobile-hidden">备注</th>
-                            <th width="15%" class="mobile-hidden">日期</th>
-                            <th width="20%" class="text-end pe-4 col-op">操作</th>
+                            <th class="col-name">File Name</th>
+                            <th width="20%" class="mobile-hidden">Remarks</th>
+                            <th width="15%" class="mobile-hidden">Date</th>
+                            <th width="20%" class="text-end pe-4 col-op">Operation</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -450,7 +451,8 @@
                             <td class="fw-bold text-dark">
                                 <i class="bi bi-folder-fill folder-icon"></i> {{ folder.name }}
                             </td>
-                            <td class="mobile-hidden"><span class="badge bg-light text-secondary fw-normal">文件夹</span>
+                            <td class="mobile-hidden"><span
+                                    class="badge bg-light text-secondary fw-normal">Folder</span>
                             </td>
                             <td class="text-muted small mobile-hidden">{{ folder.create_time.strftime('%Y-%m-%d') }}
                             </td>
@@ -478,18 +480,18 @@
                             <td class="text-muted small mobile-hidden">{{ file.upload_time.strftime('%Y-%m-%d') }}</td>
                             <td class="text-end pe-4 col-op">
                                 <div class="d-flex justify-content-end gap-1">
-                                    <button class="btn btn-icon btn-outline-secondary border-0" title="打印"
+                                    <button class="btn btn-icon btn-outline-secondary border-0" title="Print"
                                         onclick="event.stopPropagation(); triggerPrint('{{ url_for('view_file', file_id=file.id) }}', '{{ file.real_filename }}')">
                                         <i class="bi bi-printer"></i>
                                     </button>
                                     <a href="{{ url_for('download_file', file_id=file.id) }}"
-                                        class="btn btn-icon btn-outline-primary border-0" title="下载"
+                                        class="btn btn-icon btn-outline-primary border-0" title="Download"
                                         onclick="event.stopPropagation();">
                                         <i class="bi bi-download"></i>
                                     </a>
                                     <form action="{{ url_for('delete_file', file_id=file.id) }}" method="POST"
                                         style="display:inline;"
-                                        onsubmit="event.stopPropagation(); return confirm('确定删除这个文件吗？');">
+                                        onsubmit="event.stopPropagation(); return confirm('Are you sure to delete this file?');">
                                         <button type="submit" class="btn btn-icon btn-outline-danger border-0"
                                             onclick="event.stopPropagation();">
                                             <i class="bi bi-trash"></i>
@@ -504,7 +506,7 @@
                             <td colspan="5" class="text-center py-5 text-muted">
                                 <div class="py-4">
                                     <i class="bi bi-inbox display-4 text-light"></i>
-                                    <p class="mt-3">这里空空如也，快去上传文件吧！</p>
+                                    <p class="mt-3">It's empty here, go upload files!</p>
                                 </div>
                             </td>
                         </tr>
@@ -515,20 +517,20 @@
             </div>
         </div>
 
-        <div class="text-center text-muted small mt-4 opacity-50">系统已准备就绪 • V18.0 Zen</div>
+        <div class="text-center text-muted small mt-4 opacity-50">System is ready • V18.0 Zen</div>
     </div>
 
     <div id="batchActionBar" class="batch-bar">
         <div class="d-flex align-items-center">
             <div class="bg-white text-dark rounded-circle d-flex align-items-center justify-content-center fw-bold"
                 style="width:24px; height:24px; margin-right:10px; font-size:12px;" id="selectedCountBadge">0</div>
-            <span class="fw-bold">已选择文件</span>
+            <span class="fw-bold">Selected Files</span>
         </div>
         <div class="d-flex gap-2">
             <button class="btn btn-danger btn-sm rounded-pill px-3 fw-bold" onclick="executeBatchDelete()">
-                <i class="bi bi-trash-fill me-1"></i> 批量删除
+                <i class="bi bi-trash-fill me-1"></i> Batch Delete
             </button>
-            <button class="btn btn-secondary btn-sm rounded-pill px-3" onclick="clearSelection()">取消</button>
+            <button class="btn btn-secondary btn-sm rounded-pill px-3" onclick="clearSelection()">Cancel</button>
         </div>
     </div>
 
@@ -545,12 +547,12 @@
                     <div id="previewContainer"
                         class="preview-content rounded-3 d-flex justify-content-center align-items-center bg-light"
                         style="min-height: 50vh;">
-                        加载中...
+                        Loading...
                     </div>
                 </div>
                 <div class="modal-footer border-top-0 pt-0">
                     <a id="modalDownloadBtn" href="#" class="btn btn-primary rounded-pill px-4"><i
-                            class="bi bi-download me-1"></i> 下载原文件</a>
+                            class="bi bi-download me-1"></i> Download Original File</a>
                 </div>
             </div>
         </div>
@@ -561,23 +563,23 @@
             <div class="modal-content rounded-4 border-0 shadow">
                 <div class="modal-body p-4 text-center">
                     <div class="mb-3 text-danger"><i class="bi bi-exclamation-circle display-1"></i></div>
-                    <h4 class="fw-bold mb-2">删除文件夹</h4>
-                    <p class="text-muted mb-4">您要删除 “<span id="delFolderName" class="fw-bold text-dark"></span>”
-                        吗？<br>请选择处理方式：</p>
+                    <h4 class="fw-bold mb-2">Delete Folder</h4>
+                    <p class="text-muted mb-4">Are you sure you want to delete “<span id="delFolderName"
+                            class="fw-bold text-dark"></span>”?<br>Please select a processing method:</p>
 
                     <form id="deleteFolderForm" method="POST" class="d-grid gap-2">
                         <button type="submit" name="mode" value="keep"
                             class="btn btn-lg btn-outline-primary border-2 rounded-3 text-start p-3">
-                            <div class="fw-bold"><i class="bi bi-box-arrow-up me-2"></i> 仅删除文件夹</div>
-                            <div class="small opacity-75 ms-4">里面的文件会移到外面，不会丢失</div>
+                            <div class="fw-bold"><i class="bi bi-box-arrow-up me-2"></i> Delete Folder Only</div>
+                            <div class="small opacity-75 ms-4">Files inside will be moved outside, not lost</div>
                         </button>
                         <button type="submit" name="mode" value="delete"
                             class="btn btn-lg btn-outline-danger border-2 rounded-3 text-start p-3">
-                            <div class="fw-bold"><i class="bi bi-trash-fill me-2"></i> 彻底删除</div>
-                            <div class="small opacity-75 ms-4">连同里面的所有文件一起销毁</div>
+                            <div class="fw-bold"><i class="bi bi-trash-fill me-2"></i> Delete Thoroughly</div>
+                            <div class="small opacity-75 ms-4">All files inside will be destroyed</div>
                         </button>
                         <button type="button" class="btn btn-link text-muted text-decoration-none mt-2"
-                            data-bs-dismiss="modal">取消</button>
+                            data-bs-dismiss="modal">Cancel</button>
                     </form>
                 </div>
             </div>
@@ -609,7 +611,7 @@
                 fetch(viewUrl).then(r => r.blob()).then(blob => {
                     c.innerHTML = ''; c.style.alignItems = 'stretch';
                     const d = document.createElement('div'); d.className = 'docx-wrapper rounded'; c.appendChild(d);
-                    docx.renderAsync(blob, d).catch(e => c.innerHTML = '<div class="text-danger">预览失败，请下载查看</div>');
+                    docx.renderAsync(blob, d).catch(e => c.innerHTML = '<div class="text-danger">Preview failed, please download to view</div>');
                 });
             }
             else if (ext === 'txt') {
@@ -618,7 +620,7 @@
                 });
             }
             else {
-                c.innerHTML = '<div class="text-center text-muted"><i class="bi bi-file-earmark-break display-4 d-block mb-3"></i>无法预览此格式<br>请点击下方按钮下载</div>';
+                c.innerHTML = '<div class="text-center text-muted"><i class="bi bi-file-earmark-break display-4 d-block mb-3"></i>Cannot preview this format<br>Please click the button below to download</div>';
                 c.style.alignItems = 'center';
             }
         }
@@ -638,7 +640,7 @@
         }
         function clearSelection() { document.querySelectorAll('.item-checkbox').forEach(cb => cb.checked = false); document.getElementById('selectAll').checked = false; updateBatchBar(); }
         function executeBatchDelete() {
-            if (!confirm('⚠️ 确定要删除选中的所有文件/文件夹吗？\n此操作不可撤销！')) return;
+            if (!confirm('⚠️ Are you sure you want to delete all selected files/folders?\nThis operation cannot be undone!')) return;
             const fi = []; const foi = [];
             document.querySelectorAll('.item-checkbox:checked').forEach(cb => { if (cb.dataset.type === 'file') fi.push(cb.dataset.id); else foi.push(cb.dataset.id); });
             fetch('/batch_delete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ file_ids: fi, folder_ids: foi }) }).then(r => r.json()).then(d => { if (d.status === 'success') location.reload(); });
@@ -666,11 +668,11 @@
         ua.addEventListener('drop', async e => {
             e.preventDefault();
             const items = e.dataTransfer.items; if (!items || items.length === 0) return;
-            showProgress('正在扫描...', '分析文件结构...', 0);
+            showProgress('Scanning...', 'Analyse file structure...', 0);
             let fl = []; const ps = [];
             for (let i = 0; i < items.length; i++) { const en = items[i].webkitGetAsEntry(); if (en) ps.push(scan(en)); }
             await Promise.all(ps); fl = fl.filter(f => !f.name.startsWith('.') && f.name !== 'Thumbs.db');
-            if (fl.length > 0) await up(fl); else { hideProgress(); alert('没有可上传的有效文件'); }
+            if (fl.length > 0) await up(fl); else { hideProgress(); alert('No valid files to upload'); }
 
             async function scan(en, p = '') { if (en.isFile) return new Promise(r => en.file(f => { f.fullPath = p + f.name; fl.push(f); r(); })); else if (en.isDirectory) { const dr = en.createReader(); const ens = await readAll(dr); await Promise.all(ens.map(e => scan(e, p + en.name + '/'))); } }
             async function readAll(dr) { let es = []; let r = async () => { const rs = await new Promise(re => dr.readEntries(re)); if (rs.length > 0) { es = es.concat(rs); await r(); } }; await r(); return es; }
@@ -683,10 +685,10 @@
             for (let i = 0; i < total; i += 30) {
                 const ch = files.slice(i, i + 30); const fd = new FormData(); fd.append('folder_id', fid);
                 ch.forEach(f => { fd.append('file', f); fd.append('paths', f.fullPath || f.webkitRelativePath || f.name); });
-                showProgress('上传中...', `正在传输 ${i + 1}/${total} 个文件`, (i / total) * 100);
-                try { await fetch("{{ url_for('upload_file') }}", { method: 'POST', body: fd }); } catch { alert('网络中断'); hideProgress(); return; }
+                showProgress('Uploading...', `Uploading ${i + 1}/${total} files`, (i / total) * 100);
+                try { await fetch("{{ url_for('upload_file') }}", { method: 'POST', body: fd }); } catch { alert('Network interrupted'); hideProgress(); return; }
             }
-            showProgress('完成', '正在刷新列表...', 100); setTimeout(() => { hideProgress(); refreshTableData(); }, 1000);
+            showProgress('Completed', 'Refreshing list...', 100); setTimeout(() => { hideProgress(); refreshTableData(); }, 1000);
         }
 
         // 自动刷新
@@ -699,7 +701,7 @@
             fetch(window.location.href).then(r => r.text()).then(h => {
                 const doc = new DOMParser().parseFromString(h, 'text/html');
                 document.querySelector('#fileTable tbody').innerHTML = doc.querySelector('#fileTable tbody').innerHTML;
-                const t = document.getElementById('lastUpdatedTime'); if (t) t.innerText = "已更新: " + new Date().toLocaleTimeString();
+                const t = document.getElementById('lastUpdatedTime'); if (t) t.innerText = "Updated: " + new Date().toLocaleTimeString();
                 sp.style.display = 'none';
             }).catch(() => { sp.style.display = 'none'; });
         }
